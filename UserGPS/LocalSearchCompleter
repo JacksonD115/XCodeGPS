@@ -1,0 +1,26 @@
+import SwiftUI
+import MapKit
+
+class LocalSearchCompleter: NSObject, ObservableObject, MKLocalSearchCompleterDelegate {
+    @Published var searchResults: [MKLocalSearchCompletion] = []
+    private var searchCompleter: MKLocalSearchCompleter
+
+    override init() {
+        searchCompleter = MKLocalSearchCompleter()
+        super.init()
+        searchCompleter.delegate = self
+        searchCompleter.resultTypes = .address
+    }
+
+    func updateSearch(query: String) {
+        searchCompleter.queryFragment = query
+    }
+
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        self.searchResults = completer.results
+    }
+
+    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+        print("Local search completer failed with error: \(error.localizedDescription)")
+    }
+}
